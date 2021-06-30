@@ -1,23 +1,8 @@
-const chalk = require("chalk");
-const discord = require("discord.js");
+import chalk from "chalk";
+import discord from "discord.js";
 
-exports.log = (message) => {
-    if (message === undefined)
-        throw new Error("message parameter can't be empty!");
-
-    return console.log(chalk.white("("), chalk.cyan("brightside system"), chalk.white(")"), chalk.white(message));
-}
-
-exports.error = (message) => {
-    if (message === undefined)
-        throw new Error("message parameter can't be empty!");
-
-    return console.log(chalk.white("("), chalk.red("brightside system"), chalk.white(")"), chalk.white(message));
-}
-
-exports.log_embedded = (type, message) => {
-    if (type === undefined || message === undefined)
-        throw new Error("type/message parameter can't be empty!");
-
-    return new discord.MessageEmbed().setColor("#83cbff").setTitle(type).setDescription(message);
-}
+export const logger = {
+    normal: (message) => console.log(chalk.white("*"), chalk.cyan("brightside"), chalk.white(`- ${message}`)),
+    error: (message) => console.log(chalk.white("*"), chalk.red("brightside"), chalk.white(`- ${message}`)),
+    embed: (type, message) => new discord.MessageEmbed().setAuthor(type, "https://cdn.discordapp.com/icons/800476661254193157/60bb1208d2d1cfacbbf449bf80304e00.png","https://brightside.technology").setColor(0x83cbff).setDescription(message),
+};

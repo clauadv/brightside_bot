@@ -1,30 +1,24 @@
-const discord = require("discord.js");
-const client = new discord.Client();
+import { database } from "./utils/database.js";
+import { globals } from "./utils/globals.js";
+import { controllers } from "./controllers/controllers.js";
 
-const database = require("./utils/database");
-const logger = require("./utils/logger");
+database.connect(async (error) => {
+    if (error) globals.logger.error(error);
 
-const verify = require("./controllers/verify");
-
-database.connect(async (err) => {
-    if (err)
-        logger.error(err);
-
-    logger.log("mysql is connected")
+    globals.logger.normal("mysql connected");
 });
 
-client.on("ready", async () => {
-    logger.log("the bot is online \n");
+globals.client.on("ready", async () => {
+    globals.logger.normal(`${globals.client.user.tag.substring(0, globals.client.user.tag.length - 5)} is online\n`);
 
-    client.user.setActivity("brightside javascript", { type: 'WATCHING' });
+    globals.client.user.setActivity("brightside community", { type: 'WATCHING' });
 });
 
-client.on("message", async (message) => {
-    const guild = client.guilds.cache.get("discord server");
-    if (!guild)
-        return logger.error("can't get the guild of the server");
+globals.client.on("message", async (message) => {
+    const guild = globals.client.guilds.cache.get(globals.guild);
+    if (!guild) return globals.logger.error("couldn't get the guild of the server");
 
-    verify.do(message);
+    controllers.handle(message);
 });
 
-client.login(process.env.token);
+globals.client.login(process.env.token);
